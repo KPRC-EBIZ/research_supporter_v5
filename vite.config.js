@@ -2,7 +2,7 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  base: "/researchsupporter/",
+  base: "/research_supporter_v5/",
   plugins: [react()],
   resolve: {
     dedupe: ["react", "react-dom"],
