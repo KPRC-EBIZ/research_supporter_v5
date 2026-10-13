@@ -15,99 +15,42 @@ type RegionRule = {
 
 
 const REGION_RULES: RegionRule[] = [
-  // 서울 - 업무분장표 기준
-  {
-    name: "서울 조사1부",
-    cityNames: ["서울"],
-    districts: ["마포", "서대문", "용산", "은평", "종로", "중구"],
-    department: "조사1부",
-    areaSummary: "마포, 서대문, 용산, 은평, 종로, 중구",
-  },
-  {
-    name: "서울 조사2부",
-    cityNames: ["서울"],
-    districts: ["강북", "광진", "노원", "도봉", "동대문", "성동", "성북", "중랑", "강동"],
-    department: "조사2부",
-    areaSummary: "강북, 광진, 노원, 도봉, 동대문, 성동, 성북, 중랑, 강동",
-  },
-  {
-    name: "서울 전산사업부",
-    cityNames: ["서울"],
-    districts: ["강남", "서초", "송파"],
-    department: "전산사업부",
-    areaSummary: "강남, 서초, 송파",
-  },
-  {
-    name: "서울 회원부",
-    cityNames: ["서울"],
-    districts: ["강서", "관악", "구로", "금천", "동작", "양천", "영등포"],
-    department: "회원부",
-    areaSummary: "강서, 관악, 구로, 금천, 동작, 양천, 영등포",
-  },
+  // 서울: 담당부서와 관계없이 하나의 지역으로 통합
+  { name: "서울", cityNames: ["서울", "서울특별시"], districts: [], department: "", areaSummary: "서울 전체" },
 
-  // 경기 - 업무분장표 기준
-  {
-    name: "경기 조사1부",
-    cityNames: ["경기"],
-    districts: ["성남", "여주", "이천", "하남", "가평"],
-    department: "조사1부",
-    areaSummary: "성남, 여주, 이천, 하남, 가평",
-  },
-  {
-    name: "경기 조사2부",
-    cityNames: ["경기"],
-    districts: ["구리", "남양주", "동두천"],
-    department: "조사2부",
-    areaSummary: "구리, 남양주, 동두천",
-  },
-  {
-    name: "경기 원가조사부",
-    cityNames: ["경기"],
-    districts: ["군포", "수원", "안성", "안양", "의왕"],
-    department: "원가조사부",
-    areaSummary: "군포, 수원, 안성, 안양, 의왕",
-  },
-  {
-    name: "경기 기획조사부",
-    cityNames: ["경기"],
-    districts: ["고양", "김포", "양주", "의정부", "파주"],
-    department: "기획조사부",
-    areaSummary: "고양, 김포, 양주, 의정부, 파주",
-  },
-  {
-    name: "경기 경영지원부",
-    cityNames: ["경기"],
-    districts: ["광명", "부천", "시흥", "안산", "화성", "오산"],
-    department: "경영지원부",
-    areaSummary: "광명, 부천, 시흥, 안산, 화성, 오산",
-  },
+  // 경기: 업무분장표의 담당 구역 기준으로 구분
+  { name: "경기 조사1부", cityNames: ["경기", "경기도"], districts: ["성남", "여주", "이천", "하남", "가평"], department: "조사1부", areaSummary: "성남, 여주, 이천, 하남, 가평" },
+  { name: "경기 조사2부", cityNames: ["경기", "경기도"], districts: ["구리", "남양주", "동두천"], department: "조사2부", areaSummary: "구리, 남양주, 동두천" },
+  { name: "경기 원가조사부", cityNames: ["경기", "경기도"], districts: ["군포", "수원", "안성", "안양", "의왕"], department: "원가조사부", areaSummary: "군포, 수원, 안성, 안양, 의왕" },
+  { name: "경기 기획조사부", cityNames: ["경기", "경기도"], districts: ["고양", "김포", "양주", "의정부", "파주"], department: "기획조사부", areaSummary: "고양, 김포, 양주, 의정부, 파주" },
+  { name: "경기 경영지원부", cityNames: ["경기", "경기도"], districts: ["광명", "부천", "시흥", "안산", "화성", "오산"], department: "경영지원부", areaSummary: "광명, 부천, 시흥, 안산, 화성, 오산" },
 
-  // 나머지 시도 - 업무분장표 기준
-  { name: "인천", cityNames: ["인천"], districts: [], department: "기획조사부/회원부" },
-  { name: "울산", cityNames: ["울산"], districts: [], department: "전산사업부" },
-  { name: "강원", cityNames: ["강원"], districts: [], department: "기획관리본부" },
-  { name: "제주", cityNames: ["제주"], districts: [], department: "조사2부-경영지원부" },
-  { name: "대전", cityNames: ["대전"], districts: [], department: "대전충청지회" },
+  // 기타 시도
+  { name: "인천", cityNames: ["인천", "인천광역시"], districts: [], department: "기획조사부/회원부" },
+  { name: "울산", cityNames: ["울산", "울산광역시"], districts: [], department: "전산사업부" },
+  { name: "강원", cityNames: ["강원", "강원도", "강원특별자치도"], districts: [], department: "기획관리본부" },
+  { name: "제주", cityNames: ["제주", "제주도", "제주특별자치도"], districts: [], department: "조사2부-경영지원부" },
+  { name: "대전", cityNames: ["대전", "대전광역시"], districts: [], department: "대전충청지회" },
   { name: "충북", cityNames: ["충북", "충청북도"], districts: [], department: "대전충청지회" },
   { name: "충남", cityNames: ["충남", "충청남도"], districts: [], department: "대전충청지회" },
-  { name: "대구", cityNames: ["대구"], districts: [], department: "대구경북지회" },
-  { name: "광주", cityNames: ["광주"], districts: [], department: "광주전라지회" },
-  { name: "부산", cityNames: ["부산"], districts: [], department: "부산경남지회" },
+  { name: "대구", cityNames: ["대구", "대구광역시"], districts: [], department: "대구경북지회" },
+  { name: "광주", cityNames: ["광주", "광주광역시"], districts: [], department: "광주전라지회" },
+  { name: "부산", cityNames: ["부산", "부산광역시"], districts: [], department: "부산경남지회" },
   { name: "경남", cityNames: ["경남", "경상남도"], districts: [], department: "부산경남지회" },
 
-  // 이번 업무분장표에 없는 시도 - 기존 규칙 유지
-  { name: "세종", cityNames: ["세종"], districts: [], department: "대전충청지회" },
+  // 이번 업무분장표에 없는 시도는 기존 호환 규칙을 유지
+  { name: "세종", cityNames: ["세종", "세종특별자치시"], districts: [], department: "대전충청지회" },
   { name: "경북", cityNames: ["경북", "경상북도"], districts: [], department: "대구경북지회" },
   { name: "전남", cityNames: ["전남", "전라남도"], districts: [], department: "광주전라지회" },
   { name: "전북", cityNames: ["전북", "전라북도", "전북특별자치도"], districts: [], department: "광주전라지회" },
 ];
 
 
-const SHEET_REGION_ALIASES = new Map([
-  ["서울1", "서울 조사1부"],
-  ["서울2", "서울 조사2부"],
-  ["서울3", "서울 회원부"],
-  ["서울4", "서울 전산사업부"],
+const SHEET_REGION_ALIASES = new Map<string, string>([
+  ["서울1", "서울"],
+  ["서울2", "서울"],
+  ["서울3", "서울"],
+  ["서울4", "서울"],
   ["경기1", "경기 기획조사부"],
   ["경기2", "경기 조사2부"],
   ["경기3", "경기 경영지원부"],
@@ -130,7 +73,7 @@ const aliases: Record<string, string[]> = {
   basePrice: ["기준가격", "기준가", "가격", "기준단가"],
   region: ["권역", "담당권역"],
   city: ["광역", "시도"],
-  district: ["지역", "시군구", "구군"],
+  district: ["시군구", "구군", "지역"],
   department: ["담당부서", "담당", "부서", "지회", "담당지회"],
   address: ["주소", "마트주소", "판매처주소", "매장주소"],
   finalAddress: ["최종주소", "최종 주소", "지도주소", "검색주소"],
@@ -141,6 +84,30 @@ const aliases: Record<string, string[]> = {
 
 const clean = (value: unknown) => String(value ?? "").trim();
 const compact = (value: string) => value.toLowerCase().replace(/[\s_\-()[\]{}]/g, "");
+
+// 엑셀 헤더는 정확히 일치하는 열을 우선 사용한다.
+function pick(row: Row, key: keyof typeof aliases) {
+  const headers = Object.keys(row).filter((header) => !header.startsWith("__"));
+  for (const alias of aliases[key]) {
+    const found = headers.find((header) => compact(header) === compact(alias));
+    if (found) return clean(row[found]);
+  }
+  for (const alias of aliases[key]) {
+    const found = headers.find((header) => compact(header).includes(compact(alias)));
+    if (found) return clean(row[found]);
+  }
+  return "";
+}
+
+function numberOrNull(value: string) {
+  if (!value.trim()) return null;
+  const parsed = Number(value.replace(/[^\d.-]/g, ""));
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function ruleByName(name: string) {
+  return REGION_RULES.find((rule) => rule.name === name);
+}
 
 const normalizePlace = (value: string) =>
   value
@@ -187,7 +154,8 @@ function resolveSurveyRegion(
     fallback.replace(/\s/g, "")
   );
 
-  const direct = ruleByName(alias || fallback);
+  const direct = ruleByName(alias || fallback) ||
+    (fallback.startsWith("서울") ? ruleByName("서울") : undefined);
 
   if (direct) {
     return {
@@ -340,9 +308,10 @@ export function mergeContacts(items: SurveyItem[], contactFileRows: Row[]) {
     return contact
       ? {
           ...item,
-          region: contact.region || item.region,
-          city: contact.city || item.city,
-          department: contact.department || item.department,
+          // 연락처 보완 파일이 원본 조사표의 지역을 덮어쓰지 않도록 한다.
+          region: item.region,
+          city: item.city,
+          department: item.department,
           companyTel: item.companyTel || contact.tel,
           companyManager: item.companyManager || contact.manager,
           martTel: item.martTel || contact.martTel,
@@ -366,10 +335,12 @@ export function rebuildStoresAndRegions(items: SurveyItem[]): { regions: Region[
   const regionMap = new Map<string, Region>();
   const storeMap = new Map<string, SurveyStore>();
   const rebuiltItems = items.map((item) => {
-    const resolved = resolveSurveyRegion(item.city || "", "", item.region || "미지정");
-    const regionName = resolved.name;
-    const department = item.department || resolved.department;
-    const city = item.city || resolved.city;
+    // 이미 분류된 지역을 유지한다(여기에는 시군구 원본값이 남아 있지 않음).
+    const oldRegion = SHEET_REGION_ALIASES.get(item.region.replace(/\s/g, "")) || item.region;
+    const resolved = ruleByName(oldRegion) || ruleByName(item.city || "");
+    const regionName = resolved?.name || oldRegion || "미지정";
+    const department = item.department || resolved?.department;
+    const city = item.city || resolved?.cityNames[0];
     if (!regionMap.has(regionName)) {
       regionMap.set(regionName, { name: regionName, department, city, areaSummary: resolved.areaSummary, updatedAt: current });
     }
