@@ -1892,7 +1892,11 @@ function App() {
                       </div>
                     </details>
                   </div>
-                  <p className="area-summary">{region.areaSummary || region.city || "-"}</p>
+                  {region.areaSummary && (
+                      <p className="area-summary" title={region.areaSummary}>
+                        {region.areaSummary}
+                      </p>
+                    )}
                   <RegionSummary
                     stats={summary.total ? summary : emptyStats}
                     itemStats={allItemStats}
