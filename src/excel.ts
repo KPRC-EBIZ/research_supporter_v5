@@ -12,32 +12,47 @@ type RegionRule = {
   areaSummary?: string;
 };
 
+
 const REGION_RULES: RegionRule[] = [
+  // 서울
   { name: "서울 1권역", cityNames: ["서울"], districts: ["마포", "서대문", "용산", "은평", "종로", "중구"], department: "조사1부", areaSummary: "마포, 서대문, 용산, 은평, 종로, 중구" },
-  { name: "서울 2권역", cityNames: ["서울"], districts: ["강북", "광진", "노원", "도봉", "동대문", "성동", "성북", "중랑"], department: "조사2부", areaSummary: "강북, 광진, 노원, 도봉, 동대문, 성동, 성북, 중랑" },
+  { name: "서울 2권역", cityNames: ["서울"], districts: ["강북", "광진", "노원", "도봉", "동대문", "성동", "성북", "중랑", "강동"], department: "조사2부", areaSummary: "강북, 광진, 노원, 도봉, 동대문, 성동, 성북, 중랑, 강동" },
   { name: "서울 3권역", cityNames: ["서울"], districts: ["강서", "관악", "구로", "금천", "동작", "양천", "영등포"], department: "회원부", areaSummary: "강서, 관악, 구로, 금천, 동작, 양천, 영등포" },
-  { name: "서울 4권역", cityNames: ["서울"], districts: ["강남", "강동", "서초", "송파"], department: "조사2부 / 전산사업부", areaSummary: "강남, 강동, 서초, 송파" },
+  { name: "서울 4권역", cityNames: ["서울"], districts: ["강남", "서초", "송파"], department: "전산사업부", areaSummary: "강남, 서초, 송파" },
+
+  // 경기
   { name: "경기 1권역", cityNames: ["경기"], districts: ["고양", "김포", "파주", "양주", "연천", "의정부", "포천"], department: "기획조사부", areaSummary: "고양, 김포, 파주, 양주, 연천, 의정부, 포천" },
   { name: "경기 2권역", cityNames: ["경기"], districts: ["구리", "남양주", "동두천"], department: "조사2부", areaSummary: "구리, 남양주, 동두천" },
-  { name: "경기 3권역", cityNames: ["경기"], districts: ["광명", "부천", "시흥", "안산", "화성"], department: "경영지원부", areaSummary: "광명, 부천, 시흥, 안산, 화성" },
+  { name: "경기 3권역", cityNames: ["경기"], districts: ["광명", "부천", "시흥", "안산", "화성", "오산"], department: "경영지원부", areaSummary: "광명, 부천, 시흥, 안산, 화성, 오산" },
   { name: "경기 4권역", cityNames: ["경기"], districts: ["과천", "군포", "수원", "안성", "안양", "의왕", "평택"], department: "원가조사부", areaSummary: "과천, 군포, 수원, 안성, 안양, 의왕, 평택" },
-  { name: "경기 5권역", cityNames: ["경기"], districts: ["광주", "성남", "양평", "여주", "용인", "이천", "하남"], department: "조사1부", areaSummary: "광주, 성남, 양평, 여주, 용인, 이천, 하남" },
-  { name: "인천", cityNames: ["인천"], districts: [], department: "회원부 / 기획조사부" },
-  { name: "울산", cityNames: ["울산"], districts: [], department: "조사2부" },
-  { name: "강원", cityNames: ["강원"], districts: [], department: "조사2부" },
-  { name: "제주", cityNames: ["제주"], districts: [], department: "조사2부" },
-  { name: "대전", cityNames: ["대전"], districts: [], department: "지회 충청권" },
-  { name: "세종", cityNames: ["세종"], districts: [], department: "지회 충청권" },
-  { name: "충남", cityNames: ["충남", "충청남도"], districts: [], department: "지회 충청권" },
-  { name: "충북", cityNames: ["충북", "충청북도"], districts: [], department: "지회 충청권" },
-  { name: "대구", cityNames: ["대구"], districts: [], department: "지회 경상권" },
-  { name: "경북", cityNames: ["경북", "경상북도"], districts: [], department: "지회 경상권" },
-  { name: "광주", cityNames: ["광주"], districts: [], department: "지회 전라권" },
-  { name: "전남", cityNames: ["전남", "전라남도"], districts: [], department: "지회 전라권" },
-  { name: "전북", cityNames: ["전북", "전라북도", "전북특별자치도"], districts: [], department: "지회 전라권" },
-  { name: "부산", cityNames: ["부산"], districts: [], department: "지회 경남권" },
-  { name: "경남", cityNames: ["경남", "경상남도"], districts: [], department: "지회 경남권" },
+  { name: "경기 5권역", cityNames: ["경기"], districts: ["광주", "성남", "양평", "여주", "용인", "이천", "하남", "가평"], department: "조사1부", areaSummary: "광주, 성남, 양평, 여주, 용인, 이천, 하남, 가평" },
+
+  // 수도권 외
+  { name: "인천", cityNames: ["인천"], districts: [], department: "기획조사부/회원부" },
+  { name: "울산", cityNames: ["울산"], districts: [], department: "전산사업부" },
+  { name: "강원", cityNames: ["강원"], districts: [], department: "기획관리본부" },
+  { name: "제주", cityNames: ["제주"], districts: [], department: "조사2부-경영지원부" },
+
+  // 대전충청지회
+  { name: "대전", cityNames: ["대전"], districts: [], department: "대전충청지회" },
+  { name: "세종", cityNames: ["세종"], districts: [], department: "대전충청지회" },
+  { name: "충남", cityNames: ["충남", "충청남도"], districts: [], department: "대전충청지회" },
+  { name: "충북", cityNames: ["충북", "충청북도"], districts: [], department: "대전충청지회" },
+
+  // 대구경북지회
+  { name: "대구", cityNames: ["대구"], districts: [], department: "대구경북지회" },
+  { name: "경북", cityNames: ["경북", "경상북도"], districts: [], department: "대구경북지회" },
+
+  // 광주전라지회
+  { name: "광주", cityNames: ["광주"], districts: [], department: "광주전라지회" },
+  { name: "전남", cityNames: ["전남", "전라남도"], districts: [], department: "광주전라지회" },
+  { name: "전북", cityNames: ["전북", "전라북도", "전북특별자치도"], districts: [], department: "광주전라지회" },
+
+  // 부산경남지회
+  { name: "부산", cityNames: ["부산"], districts: [], department: "부산경남지회" },
+  { name: "경남", cityNames: ["경남", "경상남도"], districts: [], department: "부산경남지회" },
 ];
+
 
 const SHEET_REGION_ALIASES = new Map([
   ["서울1", "서울 1권역"],
@@ -97,27 +112,64 @@ function ruleByName(name: string) {
   return REGION_RULES.find((rule) => rule.name === name);
 }
 
+
 function resolveSurveyRegion(city: string, district: string, fallback = "미지정") {
   const alias = SHEET_REGION_ALIASES.get(fallback.replace(/\s/g, ""));
   if (alias) {
     const rule = ruleByName(alias);
-    return { name: alias, department: rule?.department, city: rule?.cityNames[0], areaSummary: rule?.areaSummary };
+    return {
+      name: alias,
+      department: rule?.department,
+      city: rule?.cityNames[0],
+      areaSummary: rule?.areaSummary,
+    };
   }
 
   const normalizedCity = normalizePlace(city);
   const normalizedDistrict = normalizePlace(district);
+
   const rule = REGION_RULES.find((candidate) => {
-    const cityMatched = candidate.cityNames.some((name) => normalizedCity.includes(normalizePlace(name)) || normalizePlace(name).includes(normalizedCity));
+    const cityMatched = Boolean(normalizedCity) && candidate.cityNames.some(
+      (name) =>
+        normalizedCity.includes(normalizePlace(name)) ||
+        normalizePlace(name).includes(normalizedCity)
+    );
+
     if (!cityMatched) return false;
     if (candidate.districts.length === 0) return true;
-    return candidate.districts.some((name) => normalizedDistrict.includes(normalizePlace(name)));
+
+    return candidate.districts.some(
+      (name) => normalizedDistrict === normalizePlace(name)
+    );
   });
 
-  if (rule) return { name: rule.name, department: rule.department, city: rule.cityNames[0], areaSummary: rule.areaSummary };
+  if (rule) {
+    return {
+      name: rule.name,
+      department: rule.department,
+      city: rule.cityNames[0],
+      areaSummary: rule.areaSummary,
+    };
+  }
+
   const direct = ruleByName(fallback);
-  if (direct) return { name: direct.name, department: direct.department, city: direct.cityNames[0], areaSummary: direct.areaSummary };
-  return { name: fallback || "미지정", department: undefined, city, areaSummary: undefined };
+  if (direct) {
+    return {
+      name: direct.name,
+      department: direct.department,
+      city: direct.cityNames[0],
+      areaSummary: direct.areaSummary,
+    };
+  }
+
+  return {
+    name: fallback || "미지정",
+    department: undefined,
+    city,
+    areaSummary: undefined,
+  };
 }
+
 
 function storeKey(region: string, name: string, address: string) {
   return `${region}__${name || "미상"}__${address || "주소없음"}`;
