@@ -4,61 +4,6 @@ import type { Region, SurveyItem, SurveyStore } from "./types";
 
 type Row = Record<string, unknown>;
 
-type RegionRule = {
-  name: string;
-  cityNames: string[];
-  districts: string[];
-  department: string;
-  areaSummary?: string;
-};
-
-
-
-const REGION_RULES: RegionRule[] = [
-  // 서울: 담당부서와 관계없이 하나의 지역으로 통합
-  { name: "서울", cityNames: ["서울", "서울특별시"], districts: [], department: "", areaSummary: "서울 전체" },
-
-  // 경기: 업무분장표의 담당 구역 기준으로 구분
-  { name: "경기 조사1부", cityNames: ["경기", "경기도"], districts: ["성남", "여주", "이천", "하남", "가평"], department: "조사1부", areaSummary: "성남, 여주, 이천, 하남, 가평" },
-  { name: "경기 조사2부", cityNames: ["경기", "경기도"], districts: ["구리", "남양주", "동두천"], department: "조사2부", areaSummary: "구리, 남양주, 동두천" },
-  { name: "경기 원가조사부", cityNames: ["경기", "경기도"], districts: ["군포", "수원", "안성", "안양", "의왕"], department: "원가조사부", areaSummary: "군포, 수원, 안성, 안양, 의왕" },
-  { name: "경기 기획조사부", cityNames: ["경기", "경기도"], districts: ["고양", "김포", "양주", "의정부", "파주"], department: "기획조사부", areaSummary: "고양, 김포, 양주, 의정부, 파주" },
-  { name: "경기 경영지원부", cityNames: ["경기", "경기도"], districts: ["광명", "부천", "시흥", "안산", "화성", "오산"], department: "경영지원부", areaSummary: "광명, 부천, 시흥, 안산, 화성, 오산" },
-
-  // 기타 시도
-  { name: "인천", cityNames: ["인천", "인천광역시"], districts: [], department: "기획조사부/회원부" },
-  { name: "울산", cityNames: ["울산", "울산광역시"], districts: [], department: "전산사업부" },
-  { name: "강원", cityNames: ["강원", "강원도", "강원특별자치도"], districts: [], department: "기획관리본부" },
-  { name: "제주", cityNames: ["제주", "제주도", "제주특별자치도"], districts: [], department: "조사2부-경영지원부" },
-  { name: "대전", cityNames: ["대전", "대전광역시"], districts: [], department: "대전충청지회" },
-  { name: "충북", cityNames: ["충북", "충청북도"], districts: [], department: "대전충청지회" },
-  { name: "충남", cityNames: ["충남", "충청남도"], districts: [], department: "대전충청지회" },
-  { name: "대구", cityNames: ["대구", "대구광역시"], districts: [], department: "대구경북지회" },
-  { name: "광주", cityNames: ["광주", "광주광역시"], districts: [], department: "광주전라지회" },
-  { name: "부산", cityNames: ["부산", "부산광역시"], districts: [], department: "부산경남지회" },
-  { name: "경남", cityNames: ["경남", "경상남도"], districts: [], department: "부산경남지회" },
-
-  // 이번 업무분장표에 없는 시도는 기존 호환 규칙을 유지
-  { name: "세종", cityNames: ["세종", "세종특별자치시"], districts: [], department: "대전충청지회" },
-  { name: "경북", cityNames: ["경북", "경상북도"], districts: [], department: "대구경북지회" },
-  { name: "전남", cityNames: ["전남", "전라남도"], districts: [], department: "광주전라지회" },
-  { name: "전북", cityNames: ["전북", "전라북도", "전북특별자치도"], districts: [], department: "광주전라지회" },
-];
-
-
-const SHEET_REGION_ALIASES = new Map<string, string>([
-  ["서울1", "서울"],
-  ["서울2", "서울"],
-  ["서울3", "서울"],
-  ["서울4", "서울"],
-  ["경기1", "경기 기획조사부"],
-  ["경기2", "경기 조사2부"],
-  ["경기3", "경기 경영지원부"],
-  ["경기4", "경기 원가조사부"],
-  ["경기5", "경기 조사1부"],
-]);
-
-
 const aliases: Record<string, string[]> = {
   itemNo: ["순번", "번호", "품목번호", "연번", "no"],
   companyName: ["업체명", "회사명", "제조회사", "제조사", "공급업체"],
@@ -105,77 +50,6 @@ function numberOrNull(value: string) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
-function ruleByName(name: string) {
-  return REGION_RULES.find((rule) => rule.name === name);
-}
-
-const normalizePlace = (value: string) =>
-  value
-    .replace(/\(.+?\)/g, "")
-    .replace(/\s/g, "")
-    .replace(/(특별자치도|특별자치시|광역시|특별시|자치도|자치시|도)$/, "")
-    .replace(/(시|군|구)$/, "");
-
-function resolveSurveyRegion(
-  city: string,
-  district: string,
-  fallback = "미지정"
-) {
-  const normalizedCity = normalizePlace(city);
-  const normalizedDistrict = normalizePlace(district);
-
-  // 엑셀의 광역 + 시군구를 최우선 적용
-  if (normalizedCity) {
-    const rule = REGION_RULES.find((candidate) => {
-      const cityMatched = candidate.cityNames.some(
-        (name) => normalizePlace(name) === normalizedCity
-      );
-
-      if (!cityMatched) return false;
-      if (candidate.districts.length === 0) return true;
-
-      return candidate.districts.some(
-        (name) => normalizePlace(name) === normalizedDistrict
-      );
-    });
-
-    if (rule) {
-      return {
-        name: rule.name,
-        department: rule.department,
-        city: rule.cityNames[0],
-        areaSummary: rule.areaSummary,
-      };
-    }
-  }
-
-  // 광역·시군구 판별이 불가능한 경우에만 기존 별칭 적용
-  const alias = SHEET_REGION_ALIASES.get(
-    fallback.replace(/\s/g, "")
-  );
-
-  const direct = ruleByName(alias || fallback) ||
-    (fallback.startsWith("서울") ? ruleByName("서울") : undefined);
-
-  if (direct) {
-    return {
-      name: direct.name,
-      department: direct.department,
-      city: direct.cityNames[0],
-      areaSummary: direct.areaSummary,
-    };
-  }
-
-  return {
-    name: fallback || "미지정",
-    department: undefined,
-    city,
-    areaSummary: undefined,
-  };
-}
-
-
-
 function storeKey(region: string, name: string, address: string) {
   return `${region}__${name || "미상"}__${address || "주소없음"}`;
 }
@@ -195,14 +69,21 @@ export async function parseSurveyWorkbook(source: Blob | ArrayBuffer): Promise<{
   const sheetNames = dataSheetNames(workbook);
   const storeMap = new Map<string, SurveyStore>();
   const regionMap = new Map<string, Region>();
+  const districtMap = new Map<string, Set<string>>();
   const items: SurveyItem[] = [];
   const current = now();
 
-  sheetNames.flatMap((name) => rowsFromSheet(workbook.Sheets[name], name).map((row) => ({ row, sheetName: name }))).forEach(({ row, sheetName }, index) => {
+  sheetNames.flatMap((name) => rowsFromSheet(workbook.Sheets[name], name)).forEach((row, index) => {
     const productName = pick(row, "productName");
     const barcode = pick(row, "barcode");
     if (!productName && !barcode) return;
-    const resolved = resolveSurveyRegion(pick(row, "city"), pick(row, "district"), pick(row, "region") || sheetName);
+    // 엑셀 `광역` 원문을 그대로 지역명으로 사용한다. 권역/담당부서는 생성하지 않는다.
+    const rawCity = pick(row, "city");
+    const cityName = rawCity || "미지정";
+    const districtName = pick(row, "district");
+    const resolved = { name: cityName, city: cityName, department: undefined };
+    if (!districtMap.has(cityName)) districtMap.set(cityName, new Set<string>());
+    if (districtName) districtMap.get(cityName)!.add(districtName);
     const martName = pick(row, "martName") || pick(row, "companyName") || "미상 방문지";
     const detailAddress = pick(row, "detailAddress") || pick(row, "address");
     const address = pick(row, "finalAddress") || detailAddress;
@@ -232,7 +113,7 @@ export async function parseSurveyWorkbook(source: Blob | ArrayBuffer): Promise<{
     const store = storeMap.get(key)!;
     store.itemCount += 1;
     if (!regionMap.has(resolved.name)) {
-      regionMap.set(resolved.name, { name: resolved.name, department: resolved.department, city: resolved.city, areaSummary: resolved.areaSummary, updatedAt: current });
+      regionMap.set(resolved.name, { name: resolved.name, department: resolved.department, city: resolved.city, areaSummary: "", updatedAt: current });
     }
     items.push({
       id: uid("item"),
@@ -279,6 +160,11 @@ export async function parseSurveyWorkbook(source: Blob | ArrayBuffer): Promise<{
     });
   });
 
+  // 시군구는 입력 파일에서 확인된 값만 중복 제거하여 카드의 부제목으로 보낸다.
+  for (const [city, region] of regionMap) {
+    region.areaSummary = Array.from(districtMap.get(city) || []).sort((a, b) => a.localeCompare(b, "ko")).join(", ");
+  }
+
   return { regions: sortRegions(Array.from(regionMap.values())), stores: Array.from(storeMap.values()), items };
 }
 
@@ -287,16 +173,16 @@ export function mergeContacts(items: SurveyItem[], contactFileRows: Row[]) {
   const byItemNo = new Map<string, { tel: string; manager: string; address: string; martName: string; martTel: string; region: string; city: string; department: string }>();
   contactFileRows.forEach((row) => {
     const company = pick(row, "companyName");
-    const resolved = resolveSurveyRegion(pick(row, "city"), pick(row, "district"), clean(row.__sheetName));
+    const contactCity = pick(row, "city");
     const contact = {
       tel: pick(row, "companyTel"),
       manager: pick(row, "companyManager"),
       address: pick(row, "address"),
       martName: pick(row, "martName"),
       martTel: pick(row, "martTel"),
-      region: resolved.name,
-      city: resolved.city || pick(row, "city"),
-      department: resolved.department || pick(row, "department"),
+      region: contactCity,
+      city: contactCity,
+      department: pick(row, "department"),
     };
     if (company) contacts.set(company, contact);
     const itemNo = pick(row, "itemNo");
@@ -330,19 +216,18 @@ export async function parseContactRows(source: Blob | ArrayBuffer): Promise<Row[
   return sheetNames.flatMap((name) => rowsFromSheet(workbook.Sheets[name], name));
 }
 
-export function rebuildStoresAndRegions(items: SurveyItem[]): { regions: Region[]; stores: SurveyStore[]; items: SurveyItem[] } {
+export function rebuildStoresAndRegions(items: SurveyItem[], sourceRegions: Region[] = []): { regions: Region[]; stores: SurveyStore[]; items: SurveyItem[] } {
   const current = now();
   const regionMap = new Map<string, Region>();
   const storeMap = new Map<string, SurveyStore>();
+  const sourceRegionByName = new Map(sourceRegions.map((region) => [region.name, region]));
   const rebuiltItems = items.map((item) => {
-    // 이미 분류된 지역을 유지한다(여기에는 시군구 원본값이 남아 있지 않음).
-    const oldRegion = SHEET_REGION_ALIASES.get(item.region.replace(/\s/g, "")) || item.region;
-    const resolved = ruleByName(oldRegion) || ruleByName(item.city || "");
-    const regionName = resolved?.name || oldRegion || "미지정";
-    const department = item.department || resolved?.department;
-    const city = item.city || resolved?.cityNames[0];
+    // 이미 엑셀에서 확정된 광역 이름을 변경하지 않는다.
+    const regionName = item.region || item.city || "미지정";
+    const department = undefined;
+    const city = item.city || regionName;
     if (!regionMap.has(regionName)) {
-      regionMap.set(regionName, { name: regionName, department, city, areaSummary: resolved.areaSummary, updatedAt: current });
+      regionMap.set(regionName, { name: regionName, department, city, areaSummary: sourceRegionByName.get(regionName)?.areaSummary || "", updatedAt: current });
     }
     const key = storeKey(regionName, item.storeName || item.martName, item.storeAddress);
     if (!storeMap.has(key)) {
@@ -370,13 +255,8 @@ export function rebuildStoresAndRegions(items: SurveyItem[]): { regions: Region[
 }
 
 function sortRegions(regions: Region[]) {
-  const order = REGION_RULES.map((rule) => rule.name);
-  return regions.sort((a, b) => {
-    const ai = order.indexOf(a.name);
-    const bi = order.indexOf(b.name);
-    if (ai !== -1 || bi !== -1) return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
-    return a.name.localeCompare(b.name, "ko");
-  });
+  // 업로드 엑셀에서 광역이 처음 등장한 순서를 유지한다.
+  return regions;
 }
 
 function rowsFromSheet(sheet: XLSX.WorkSheet, sheetName = ""): Row[] {
